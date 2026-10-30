@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/ARM-auto-place/db-migrations/pkg/migrations"
+	"github.com/ARM-auto-place/db_migrations/pkg/migrations"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )

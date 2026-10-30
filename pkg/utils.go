@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ARM-auto-place/db-migrations/pkg/goose_logger"
+	"github.com/ARM-auto-place/db_migrations/pkg/goose_logger"
 	"github.com/pressly/goose/v3"
 	"github.com/rs/zerolog/log"
 )

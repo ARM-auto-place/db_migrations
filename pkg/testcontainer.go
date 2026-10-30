@@ -8,8 +8,8 @@ import (
 
 	"github.com/testcontainers/testcontainers-go"
 
-	"github.com/docker/go-connections/nat"
 	_ "github.com/lib/pq"
+	"github.com/moby/moby/api/types/network"
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
@@ -26,8 +26,7 @@ func CreatePostgresTestContainer(ctx context.Context) (*DatabaseConnectionParams
 		"POSTGRES_PASSWORD": tPassword,
 		"POSTGRES_DB":       tDB,
 	}
-	natPort := nat.Port(tPort)
-	dbURL := func(host string, port nat.Port) string {
+	dbURL := func(host string, port network.Port) string {
 		// for local replace docker to localhost
 		return "postgres://" + tUser + ":" + tPassword + "@" + tHost + ":" + port.Port() + "/" + tDB + "?sslmode=disable"
 	}
@@ -37,7 +36,7 @@ func CreatePostgresTestContainer(ctx context.Context) (*DatabaseConnectionParams
 			ExposedPorts: []string{tPort},
 			Cmd:          []string{"postgres", "-c", "fsync=off"},
 			Env:          env,
-			WaitingFor:   wait.ForSQL(natPort, "postgres", dbURL),
+			WaitingFor:   wait.ForSQL(tPort, "postgres", dbURL),
 		},
 		Started: true,
 	}
@@ -47,7 +46,7 @@ func CreatePostgresTestContainer(ctx context.Context) (*DatabaseConnectionParams
 	}
 
 	host, _ := container.Host(ctx)
-	mappedPort, _ := container.MappedPort(ctx, natPort)
+	mappedPort, _ := container.MappedPort(ctx, tPort)
 	containerPort, _ := strconv.Atoi(mappedPort.Port())
 	dbConnParams := DatabaseConnectionParams{
 		Host:     host,

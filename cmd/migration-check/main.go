@@ -10,7 +10,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
-	"github.com/ARM-auto-place/db-migrations/pkg/migrations"
+	"github.com/ARM-auto-place/db_migrations/pkg/migrations"
 )
 
 func main() {
