@@ -15,7 +15,6 @@ CREATE TABLE chats (
     seller_user_id UUID NOT NULL,
     car_id UUID NOT NULL,
     last_read_at TIMESTAMPTZ,
-    dialog_started_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     CONSTRAINT chats_distinct_participants_check CHECK (user_id <> seller_user_id),
     CONSTRAINT chats_user_car_id_uk UNIQUE (user_id, car_id)
@@ -24,8 +23,7 @@ CREATE TABLE chats (
 CREATE INDEX idx_chats_seller_created_at
     ON chats (seller_user_id, created_at DESC);
 
--- Each support request is a separate row. There is deliberately no unique
--- constraint on user_id, so one user can have several support conversations.
+
 CREATE TABLE support_chat (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL,
@@ -42,9 +40,7 @@ CREATE INDEX idx_support_chat_user_created_at
 CREATE INDEX idx_support_chat_queue
     ON support_chat (support_status, dialog_started_at DESC, created_at DESC);
 
--- Messages belong to one chat through the matching link table. Keeping the
--- two message tables separate prevents support messages from entering the
--- buyer/seller history (and vice versa).
+
 CREATE TABLE messages (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     sender_id UUID NOT NULL,
