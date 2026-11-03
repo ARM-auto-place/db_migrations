@@ -15,16 +15,16 @@ CREATE TABLE IF NOT EXISTS users.user (
     address text
 );
 
-CREATE TABLE IF NOT EXISTS users.user_role (
-    user_id uuid NOT NULL,
-    ROLE users.user_roles NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users.user (id) ON DELETE CASCADE
-);
-
 CREATE TYPE users.user_roles AS ENUM (
     'admin',
     'owner',
     'seller'
+);
+
+CREATE TABLE IF NOT EXISTS users.user_role (
+    user_id uuid NOT NULL,
+    ROLE users.user_roles NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users.user (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS users.user_settings (
@@ -40,6 +40,15 @@ CREATE TABLE IF NOT EXISTS users.user_favorites (
     FOREIGN KEY (user_id) REFERENCES users.user (id) ON DELETE CASCADE
 );
 
+INSERT INTO users.user (id, name, sure_name, phone, email)
+VALUES (
+    '00000000-0000-0000-0000-000000000001',
+    'ARM',
+    'Bot',
+    'system',
+    'bot@system.local'
+)
+ON CONFLICT (id) DO NOTHING;
 -- +goose StatementEnd
 -- +goose Down
 -- +goose StatementBegin
