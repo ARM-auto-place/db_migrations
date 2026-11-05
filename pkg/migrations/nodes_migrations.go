@@ -27,6 +27,9 @@ func StartNodesMigration(nodes []DatabaseConnectionParams, nodesMigrationsDirect
 		return
 	}
 	defer closeConnections(connections)
+	if err = ensureGooseSchema(connections); err != nil {
+		return
+	}
 
 	versions, err := getCurrentNodesVersions(connections)
 	if err != nil {

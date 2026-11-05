@@ -20,8 +20,10 @@ type DatabaseConnectionParams struct {
 	Password string
 }
 
+const gooseSchema = "migrations"
+
 func setup(fs embed.FS) (err error) {
-	goose.SetTableName("migrations.goose_db_version")
+	goose.SetTableName(gooseSchema + ".goose_db_version")
 	goose.SetBaseFS(fs)
 	if err = goose.SetDialect("postgres"); err != nil {
 		return fmt.Errorf("can not set dialect for migrations, %w", err)
@@ -29,6 +31,15 @@ func setup(fs embed.FS) (err error) {
 	goose.SetVerbose(true)
 	goose.SetLogger(goose_logger.NewGooseLoggerAdapter(&log.Logger))
 	return
+}
+
+func ensureGooseSchema(connections []*sql.DB) error {
+	for i, conn := range connections {
+		if _, err := conn.Exec("CREATE SCHEMA IF NOT EXISTS " + gooseSchema); err != nil {
+			return fmt.Errorf("can not create goose schema for db %d, %w", i+1, err)
+		}
+	}
+	return nil
 }
 
 func openSqlConnection(connParam *DatabaseConnectionParams) (*sql.DB, error) {
