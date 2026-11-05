@@ -1,6 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE SCHEMA IF NOT EXISTS users;
+CREATE SCHEMA IF NOT EXISTS migrations;
 
 CREATE TABLE IF NOT EXISTS users.user (
     id uuid PRIMARY KEY,
